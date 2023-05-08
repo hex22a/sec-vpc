@@ -17,20 +17,13 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "web" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
-  subnet_id                   = aws_subnet.public
+  subnet_id                   = aws_subnet.public.id
+  vpc_security_group_ids      = [aws_security_group.instance_sg.id]
   associate_public_ip_address = true
 
-  user_data = <<EOF
-{
-apt update \
-    && apt install -y ec2-instance-connect ca-certificates wget net-tools gnupg;
+  user_data = file("startup.sh")
 
-wget https://as-repository.openvpn.net/as-repo-public.asc -qO /etc/apt/trusted.gpg.d/as-repository.asc
-echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/as-repository.asc] http://as-repository.openvpn.net/as/debian jammy main">/etc/apt/sources.list.d/openvpn-as-repo.list
-
-apt update && apt -y install openvpn-as
-EOF
-
+  user_data_replace_on_change = true
   tags = {
     Name = "VPN"
   }
