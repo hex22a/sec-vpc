@@ -62,7 +62,7 @@ If you properly setup [EC2InstanceConnect](https://console.aws.amazon.com/iam/ho
 
 ```bash
 # One you connected to the instance output the content of /usr/local/openvpn_as/init.log and look for openvpn default superuser password
-cat /usr/local/openvpn_as/init.log
+sudo cat /usr/local/openvpn_as/init.log
 ```
 
 💭 **Important 3**
