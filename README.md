@@ -32,6 +32,51 @@
 
 💭 **Important 2**: Best practice is to attach permissions to a [group](https://console.aws.amazon.com/iam/home#/groups) and then add users to that group, rather than giving permissions to user directly. In this particular case there's not much difference, so you can do either.
 
+
+#### Policy example:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteSubnet",
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceAttribute",
+        "ec2:DescribeVpcAttribute",
+        "ec2:DeleteRouteTable",
+        "ec2:DescribeInternetGateways",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DescribeVolumes",
+        "ec2:DeleteInternetGateway",
+        "ec2:DescribeRouteTables",
+        "ec2:TerminateInstances",
+        "ec2:DescribeVpcClassicLinkDnsSupport",
+        "ec2:DescribeTags",
+        "ec2:DetachInternetGateway",
+        "ec2:DisassociateRouteTable",
+        "ec2:DescribeInstanceCreditSpecifications",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeVpcClassicLink",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:DescribeImages",
+        "ec2:DescribeSecurityGroupRules",
+        "ec2:DescribeVpcs",
+        "ec2:DeleteSecurityGroup",
+        "ec2:DescribeInstanceTypes",
+        "ec2:DeleteVpc",
+        "ec2:DescribeSubnets"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+
 ## Configure AWS CLI
 
 ```bash
