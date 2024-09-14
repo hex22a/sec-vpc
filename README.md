@@ -103,7 +103,7 @@ tarraform apply
 
 ## Get the admin password
 
-If you properly setup [EC2InstanceConnect](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/EC2InstanceConnect$serviceLevelSummary) you should be able to SSH into the instance throuh AWS Console.
+If you properly set up [EC2InstanceConnect](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/EC2InstanceConnect$serviceLevelSummary) you should be able to SSH into the instance throuh AWS Console.
 
 ```bash
 # One you connected to the instance output the content of /usr/local/openvpn_as/init.log and look for openvpn default superuser password
