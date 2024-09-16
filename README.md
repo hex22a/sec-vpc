@@ -43,19 +43,33 @@
       "Sid": "VisualEditor0",
       "Effect": "Allow",
       "Action": [
+        "ec2:AuthorizeSecurityGroupIngress",
         "ec2:DeleteSubnet",
         "ec2:DescribeInstances",
         "ec2:DescribeInstanceAttribute",
+        "ec2:CreateVpc",
+        "ec2:AttachInternetGateway",
         "ec2:DescribeVpcAttribute",
         "ec2:DeleteRouteTable",
+        "ec2:ModifySubnetAttribute",
+        "ec2:AssociateRouteTable",
         "ec2:DescribeInternetGateways",
         "ec2:DescribeNetworkInterfaces",
+        "ec2:CreateRoute",
+        "ec2:CreateInternetGateway",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:CreateSecurityGroup",
         "ec2:DescribeVolumes",
+        "ec2:ModifyVpcAttribute",
         "ec2:DeleteInternetGateway",
         "ec2:DescribeRouteTables",
+        "ec2:AuthorizeSecurityGroupEgress",
         "ec2:TerminateInstances",
         "ec2:DescribeVpcClassicLinkDnsSupport",
         "ec2:DescribeTags",
+        "ec2:CreateTags",
+        "ec2:CreateRouteTable",
+        "ec2:RunInstances",
         "ec2:DetachInternetGateway",
         "ec2:DisassociateRouteTable",
         "ec2:DescribeInstanceCreditSpecifications",
@@ -68,6 +82,7 @@
         "ec2:DeleteSecurityGroup",
         "ec2:DescribeInstanceTypes",
         "ec2:DeleteVpc",
+        "ec2:CreateSubnet",
         "ec2:DescribeSubnets"
       ],
       "Resource": "*"
@@ -143,6 +158,14 @@ terraform destroy
 
 ## Troubleshooting
 
+Useful command
+
+```bash
+aws ec2 describe-images --region us-east-1 --filters "Name=name,Values=*24.04*" "Name=architecture,Values=x86_64" --owners 099720109477 --max-results 10
+```
+
+
+If You're getting following error:
 ```
 Unrecognized option or missing or extra parameter(s) in configuration: (line 4): dhcp-pre-release (2.4.4)
 ``` 
