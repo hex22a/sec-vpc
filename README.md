@@ -161,15 +161,15 @@ terraform destroy
 Useful command
 
 ```bash
-aws ec2 describe-images --region us-east-1 --filters "Name=name,Values=*24.04*" "Name=architecture,Values=x86_64" --owners 099720109477 --max-results 10
+aws ec2 describe-images --region us-east-1 --filters "Name=name,Values=*24.04*" "Name=architecture,Values=x86_64" --owners 099720109477 --max-items 10
 ```
 
 ```bash
-aws ec2 describe-images --region eu-west-2 --filters "Name=architecture,Values=x86_64" "Name=root-device-type,Values=ebs" "Name=virtualization-type,Values=hvm" "Name=name,Values=*al2023*" --query 'sort_by(Images, &CreationDate)[-1].[ImageId, Name, CreationDate]' --owners 137112412989 --max-results 100
+aws ec2 describe-images --region eu-west-2 --filters "Name=architecture,Values=x86_64" "Name=root-device-type,Values=ebs" "Name=virtualization-type,Values=hvm" "Name=name,Values=*al2023*" --query 'sort_by(Images, &CreationDate)[-1].[ImageId, Name, CreationDate]' --owners 137112412989 --max-items 10
 ```
 
 ```bash
-aws ec2 describe-images --region eu-west-1 --filters "Name=name,Values=RHEL-9.4.0_HVM-*" "Name=architecture,Values=x86_64" "Name=root-device-type,Values=ebs" "Name=virtualization-type,Values=hvm" --owners 309956199498 --max-results 100
+aws ec2 describe-images --region us-east-1 --filters "Name=name,Values=RHEL-9.4.0_HVM-*-x86_64-*-GP3" "Name=architecture,Values=x86_64" "Name=root-device-type,Values=ebs" "Name=virtualization-type,Values=hvm" --owners 309956199498 --max-items 10
 ```
 
 
