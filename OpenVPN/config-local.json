@@ -1,0 +1,22 @@
+{
+  "_INTERNAL": {
+    "run_api.active_profile": "Default",
+    "webui.edit_profile": "Default"
+  },
+  "Default": {
+    "host.name": "42.0.0.191",
+    "admin_ui.https.ip_address": "all",
+    "admin_ui.https.port": "943",
+    "cs.https.ip_address": "all",
+    "cs.https.port": "943",
+    "vpn.daemon.0.listen.ip_address": "all",
+    "vpn.daemon.0.server.ip_address": "all",
+    "vpn.daemon.0.listen.port": "443",
+    "vpn.client.routing.reroute_gw": "true",
+    "vpn.client.routing.reroute_dns": "true",
+    "vpn.server.routing.private_access": "nat",
+    "vpn.server.daemon.tcp.port": "443",
+    "vpn.server.daemon.tcp.n_daemons": 1,
+    "vpn.server.daemon.udp.n_daemons": 1
+  }
+}
