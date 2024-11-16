@@ -70,6 +70,7 @@
         "ec2:CreateTags",
         "ec2:CreateRouteTable",
         "ec2:RunInstances",
+        "ec2:ModifySecurityGroupRules",
         "ec2:DetachInternetGateway",
         "ec2:DisassociateRouteTable",
         "ec2:DescribeInstanceCreditSpecifications",
