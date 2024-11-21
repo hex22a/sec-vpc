@@ -1,3 +1,6 @@
+This project is currently focused on deploying VPN servers to Amazon Web Services.
+At this moment it supports [OpenVPN](https://openvpn.net/) and [3x-ui](https://github.com/MHSanaei/3x-ui).
+
 # Sec VPC
 
 🔐 Secure VPC for personal needs. Helps you create your own VPN server in a separate VPC in a few simple steps. 
@@ -12,6 +15,27 @@
 
 💥 Easy to destroy
 
+## Project structure
+
+```
+3x-iu/
+    |main.tf
+    |post_install.tf
+    |servers.tf
+    |variables.tf
+OpenVPN/
+    |config-local.json
+    |main.tf
+    |servers.tf
+    |startup.sh
+main.tf
+varibles.tf
+```
+
+## How it works?
+
+Root main.tf creates a separate VPC in AWS with 1 [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html) and 1 [Route Table](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html). In order to deploy VPN instances you need to run terraform from a corresponding directory. These pieces of infrastructure depend on main.tf from the root directory. 
+
 ## Pre-requirements
 
 🚜 Tarraform. [tfswitch](https://github.com/warrensbox/terraform-switcher) is recomended to manage Terraform versions
@@ -20,18 +44,18 @@
 
 🚜 [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 
-🔌 [EC2 Instance Connect CLI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-set-up.html#ec2-instance-connect-install-eic-CLI)
+💾 [AWS S3 bucket to store tfstate](https://developer.hashicorp.com/terraform/language/backend/s3)
 
-🤖 [IAM User](https://console.aws.amazon.com/iam/home#/users) with following policies:
+🤖 [IAM User](https://console.aws.amazon.com/iam/home#/users):
 
-1. [AmazonEC2FullAccess](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/AmazonEC2FullAccess$serviceLevelSummary)
+Create an IAM user (as opposed to root user) in your AWS account and give it permissions for your S3 bucket.
+For purposes of this tutorial we're going to call it `robot`. **Note!** Although you can attach polices directly to IAM users it's not a best practice. Attach polices to the User Groups and then add users to those groups instead.
 
-3. [EC2InstanceConnect](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/EC2InstanceConnect$serviceLevelSummary)
+Get AWS access key for the user
 
-💭 **Important**: Create a separate user instead of using default sudo-level access.
+![IAM user page example](./tutorial/user.png)
 
-💭 **Important 2**: Best practice is to attach permissions to a [group](https://console.aws.amazon.com/iam/home#/groups) and then add users to that group, rather than giving permissions to user directly. In this particular case there's not much difference, so you can do either.
-
+Make sure you saved both **Access key** and **Secret access key** because those values are going to be shown only once.
 
 #### Policy example:
 
@@ -103,12 +127,14 @@ The tool will prompt for an IAM credentials. Fill in ones, created before.
 
 ## Deploy
 
+### Sec VPC
+
 ```bash
 # Make sure you're on correct version of terraform
 tfswich
 
 # Init terraform state
-terraform init
+terraform init -backend-config="bucket=YOR_BUCKET_NAME" -backend-config="region=us-east-1"
 
 # Plan your infra
 terraform plan
@@ -117,9 +143,75 @@ terraform plan
 tarraform apply
 ```
 
-## Get the admin password
+### 3x-ui
 
-If you properly set up [EC2InstanceConnect](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/EC2InstanceConnect$serviceLevelSummary) you should be able to SSH into the instance throuh AWS Console.
+```bash
+# jump into correct directory
+cd ./3x-ui
+
+# Init terraform state
+terraform init -backend-config="bucket=YOR_BUCKET_NAME" -backend-config="region=us-east-1"
+
+# Plan your infra
+terraform plan
+
+# Deploy
+tarraform apply
+```
+
+#### Connect to instance
+
+Go to AWS EC2 Console and find your 3x-ui instance. Open instance details and click "Connect"
+
+![Screen capture "Instance details"](./tutorial/instance_details.jpeg)
+
+Make sure "Connect using EC2 Instance Connect" is selected and username is "ubuntu"
+
+![Screen capture "Connect to instance"](./tutorial/connect_to_instance.jpeg)
+
+If everything is done correctly you should successfully connect to a remote instance
+
+#### 3x-ui
+
+Follow steps from [3x-ui](https://github.com/MHSanaei/3x-ui) to install it
+
+#### post_install.tf
+
+In order to access Web UI you need to change contents of **post_install.tf** to match ports.
+
+```bash
+terraform apply
+```
+
+Do the same after crating an Inbound in 3x-ui. 
+
+### OpenVPN
+
+```bash
+# jump into correct directory
+cd ./OpenVPN
+
+# Init terraform state
+terraform init -backend-config="bucket=YOR_BUCKET_NAME" -backend-config="region=us-east-1"
+
+# Plan your infra
+terraform plan
+
+# Deploy
+tarraform apply
+```
+
+#### Get the admin password
+
+Go to AWS EC2 Console and find your OpenVPN instance. Open instance details and click "Connect"
+
+![Screen capture "Instance details"](./tutorial/instance_details.jpeg)
+
+Make sure "Connect using EC2 Instance Connect" is selected and username is "ubuntu"
+
+![Screen capture "Connect to instance"](./tutorial/connect_to_instance.jpeg)
+
+If everything is done correctly you should successfully connect to a remote instance
 
 ```bash
 # One you connected to the instance output the content of /usr/local/openvpn_as/init.log and look for openvpn default superuser password
@@ -131,9 +223,9 @@ __Don't forget to change your admin password after first login!__
 
 Instance configuration is complete 🎉
 
-## Set up VPN
+#### Set up VPN
 
-### Server
+##### Server
 
 Log in as  `openvpn` user at `https://PUBLIC_IP/admin`. Ignore SSL warning, or add SSL Cert as trusted to the keychain. You can find your public ip in [AWS Console](https://console.aws.amazon.com/). To bypass Google Chrome's "Not Secure" warning, just type in "thisisunsafe" while the tab is open. 
 
@@ -143,7 +235,7 @@ Create 👩‍💻 VPN users, click "More Settings" to set password, enable auto
 
 __Don't forget to "Update Running Server"__
 
-### Client
+##### Client
 
 Login as a 👩‍💻 VPN user [https://PUBLIC_IP/?src=connect](https://PUBLIC_IP/?src=connect)
 
@@ -159,7 +251,7 @@ terraform destroy
 
 ## Troubleshooting
 
-Useful command
+Useful commands:
 
 ```bash
 aws ec2 describe-images --region us-east-1 --filters "Name=name,Values=*24.04*" "Name=architecture,Values=x86_64" --owners 099720109477 --max-items 10
@@ -189,4 +281,7 @@ pull-filter ignore "dhcp-release"
 pull-filter ignore "register-dns"
 pull-filter ignore "block-ipv6"
 ```
+
+
+If you're having issues with SSH make sure your time in local machine is set to automatic.
 
